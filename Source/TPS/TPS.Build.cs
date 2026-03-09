@@ -25,19 +25,6 @@ public class TPS : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] {
 			"TPS",
-			"TPS/Variant_Platforming",
-			"TPS/Variant_Platforming/Animation",
-			"TPS/Variant_Combat",
-			"TPS/Variant_Combat/AI",
-			"TPS/Variant_Combat/Animation",
-			"TPS/Variant_Combat/Gameplay",
-			"TPS/Variant_Combat/Interfaces",
-			"TPS/Variant_Combat/UI",
-			"TPS/Variant_SideScrolling",
-			"TPS/Variant_SideScrolling/AI",
-			"TPS/Variant_SideScrolling/Gameplay",
-			"TPS/Variant_SideScrolling/Interfaces",
-			"TPS/Variant_SideScrolling/UI"
 		});
 
 		// Uncomment if you are using Slate UI
