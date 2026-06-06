@@ -23,9 +23,39 @@ void ATPSBaseWeaponGame::BeginPlay()
 
 }
 
+bool ATPSBaseWeaponGame::AddAmmo(FAmmoData AmmoToAdd)
+{
+	if (DefaultAmmo.Clips == CurrentAmmo.Clips)
+	{
+		return false;
+	}
+
+	if (DefaultAmmo.Clips >= AmmoToAdd.Clips)
+	{
+		if (CurrentAmmo.Clips + AmmoToAdd.Clips >= DefaultAmmo.Clips)
+		{
+			CurrentAmmo.Clips = DefaultAmmo.Clips;
+		}
+		else
+		{
+			CurrentAmmo.Clips += AmmoToAdd.Clips;
+		}
+	}
+	else 
+	{
+		CurrentAmmo.Clips = DefaultAmmo.Clips;
+	}
+	bIsNeedAmmo = false;
+	return true;
+
+}
+
 void ATPSBaseWeaponGame::StartFire()
 {
-	if (ReloadInProgress || CurrentAmmo.Bullets == 0) return;
+	if (ReloadInProgress ) return;
+
+	if (CurrentAmmo.Bullets == 0)
+		Reload();
 
 	GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &ATPSBaseWeaponGame::MakeShot, TimeBetweenShots, true, 0.2f);
 }
@@ -42,24 +72,13 @@ void ATPSBaseWeaponGame::StopFire()
 
 void ATPSBaseWeaponGame::Reload()
 {
-	if (ReloadInProgress)
-		return;
-
-	if (!WeaponMesh)
-	{
-		UE_LOG(LogTPSBaseWeapon, Error, TEXT("WeaponMesh is null in Reload()"));
-		return;
-	}
-
-	if (!ReloadAnim)
-	{
-		UE_LOG(LogTPSBaseWeapon, Error, TEXT("ReloadAnim is not assignet in Reload()"));
-		return;
-	}
 	
-	if (CurrentAmmo.Clips == 0)
+	if (IsClipEmpty())
 	{
 		UE_LOG(LogTPSBaseWeapon, Warning, TEXT("No clips"));
+		StopFire();
+		bIsNeedAmmo = true;
+		return;
 	}
 
 	if (CurrentAmmo.Bullets == DefaultAmmo.Bullets)
@@ -67,7 +86,9 @@ void ATPSBaseWeaponGame::Reload()
 		return;
 	}
 
+	bIsNeedAmmo = false;
 	ReloadInProgress = true;
+
 	WeaponMesh->PlayAnimation(ReloadAnim, false);
 	float lReloadAnimTime = ReloadAnim->GetPlayLength();
 
@@ -100,7 +121,7 @@ void ATPSBaseWeaponGame::DecreaseAmmo()
 
 bool ATPSBaseWeaponGame::IsClipEmpty() const
 {
-	return false;
+	return CurrentAmmo.Clips == 0;
 }
 
 void ATPSBaseWeaponGame::SwitchIsReload()

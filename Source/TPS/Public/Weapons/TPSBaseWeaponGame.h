@@ -39,13 +39,24 @@ public:
 	UFUNCTION (BlueprintImplementableEvent)
 	void CreateProjectile(FVector StartLocation, FRotator StartRotation);
 
+	UFUNCTION(BlueprintCallable)
+	bool AddAmmo(FAmmoData AmmoToAdd);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FAmmoData GetCurrentAmmo() const
+	{
+		return CurrentAmmo;
+	}
+
+
 protected:
 	virtual void BeginPlay() override;
 
 	/*PROPERTIES*/
 
 public:
-
+	UPROPERTY (VisibleAnywhere, BlueprintReadWrite)
+	bool bIsNeedAmmo = false;
 
 protected:
 
@@ -81,7 +92,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "TPS|Debug")
 	bool bIsTraceShoot = true;
-
 
 
 private:
